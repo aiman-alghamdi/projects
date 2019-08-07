@@ -1,0 +1,511 @@
+---
+title: "project_R"
+author: "aiman"
+date: "28 ›»—«Ì—° 2019"
+output: html_document
+---
+=======================================================
+
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+
+library(ggplot2)
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+red_wine <- read.csv("wineQualityReds.csv")
+
+```
+
+```{r echo=FALSE,overviwe}
+dim(red_wine)
+str(red_wine)
+```
+
+this is an overvie, the dataset has 1599 objects and 13 varibales, two of it are integer <br>
+and 11 are Numeric data types <br>
+
+
+
+# Univariate Plots Section
+
+
+
+
+```{r echo=FALSE,Univariate_Plots }
+# functions to polt univariate and produce five number summary 
+Uni <- function(var, varname){
+print(summary(var))
+  
+  
+ggplot(data=red_wine , aes(x= var))+
+    geom_histogram(bins = 30)+ggtitle(varname)+
+    xlab(varname) 
+}
+Uni_bar <- function(var, varname){
+print(summary(var))
+  
+  
+ggplot(data= red_wine, aes(x= var ))+
+    geom_bar(bins = 30)+ggtitle(varname)+
+    xlab(varname)
+}
+```
+
+
+### 1.fixed.acidity
+```{r echo=FALSE, fixed.acidity }
+# call 
+
+Uni(red_wine$fixed.acidity,"fixed.acidity" )
+```
+
+it looks normally distributed and the peak of distribution is between 6 and 9
+<br>
+
+### 2.quality
+```{r echo=FALSE, quality }
+# call 
+
+Uni(red_wine$quality,"quality" )
+```
+
+most of red wine has 5 or 6 rating quality , it's also normally distributed.
+
+
+
+### 3.volatile.acidity    
+```{r echo=FALSE, volatile.acidity }
+# call 
+
+Uni(red_wine$volatile.acidity,"volatile.acidity" )
+```
+
+most of volatile acidity between .2 and .8 , volatile acidity is normally distributed.
+
+# 4.citric.acid
+```{r echo=FALSE, citric.acid }
+# call 
+
+Uni(red_wine$citric.acid,"citric.acid" )
+```
+
+the citric acid not normally distribute, the data are between 0 to .75, alot of them has 0
+
+# 5.residual.sugar
+```{r echo=FALSE, residual.sugar }
+# call 
+
+Uni(red_wine$residual.sugar,"residual.sugar" )
+```
+
+most wine has 1.5 to 2.5 residual sugar, there are some has higher but we consider them as outliers
+
+### 6.chlorides
+
+
+```{r echo=FALSE, chlorides }
+# call 
+
+Uni(red_wine$chlorides,"chlorides" )+ scale_x_log10()
+```
+
+wins has 0.04 to 0.1 chlorides, i have taken the log10 to look closer .
+
+
+### 7.free.sulfur.dioxide
+```{r echo=FALSE, free.sulfur.dioxide }
+# call 
+
+Uni(red_wine$free.sulfur.dioxide,"free.sulfur.dioxide" )
+```
+
+it seems to be a right skewed, most of value in range 5-25
+
+### 8.density
+```{r echo=FALSE, density }
+# call 
+
+Uni(red_wine$density,"density" )
+```
+
+it's is normally distributed
+
+### 9.PH
+```{r echo=FALSE, pH }
+# call 
+
+Uni(red_wine$pH,"pH" )
+```
+
+
+also it's is normally distributed and the mean os 3.311
+
+
+### 10.sulphates
+```{r echo=FALSE, sulphates }
+# call 
+
+Uni(red_wine$sulphates,"sulphates" )
+```
+
+as we can see it's left skew most of data between 0.5 and 1
+
+### 11.alcohol
+```{r echo=FALSE, alcohol }
+# call 
+
+Uni(red_wine$alcohol,"alcohol" )
+```
+
+most of the data between 9 - 11 
+
+### 12.total.sulfur.dioxide
+```{r echo=FALSE, total.sulfur.dioxide }
+# call 
+
+Uni(red_wine$total.sulfur.dioxide,"total.sulfur.dioxide" )
+```
+
+it's  right skewed and it has alot of outliers
+
+
+
+
+# Univariate Analysis
+
+
+### What is the structure of your dataset?
+the dataset has 1599 object and each object has 13 variables, the variable is described <by> a chemical component of wines.
+
+### What is/are the main feature(s) of interest in your dataset?
+density and quality .. I want to know the relation between them.
+### What other features in the dataset do you think will help support your \investigation into your feature(s) of interest?
+al the chemical component are important and helpfull in the investigation
+
+### Did you create any new variables from existing variables in the dataset?
+no, for me no need for another variabiles
+### Of the features you investigated, were there any unusual distributions? \Did you perform any operations on the data to tidy, adjust, or change the form \of the data? If so, why did you do this?
+most of the data are tidy but i have use log10 to give me an accurate  number
+
+# Bivariate Plots Section
+
+
+
+
+
+```{r echo=FALSE,Bivariate_Plots}
+#Scatter polt function 
+Bivariate <- function(var1, var2, varname, var1name, var2name){
+#Scatter polt
+ggplot(data= red_wine, aes(x=var1, y= var2 ))+
+       geom_point()+geom_smooth(method='lm',alpha = 0.3)+
+       ggtitle(varname)+xlab(var1name)+
+     geom_jitter( alpha = .3)  +
+       ylab(var2name)
+}
+Bivariate_box <- function(var11, var22, varname, var1name, var2name){
+#box polt
+ggplot(data= red_wine, aes(x=var11, y= var22 ))+
+       geom_boxplot()+ggtitle(varname)+xlab(var1name)+
+       ylab(var2name)
+}
+# Compute Pearson correlation
+correlation <- function(var1 , var2){
+  message("correlation")
+cor(x = var1,y= var2)
+} 
+```
+
+### 13.quality_density
+
+```{r echo=FALSE,quality_density}
+# Compute Pearson correlation
+correlation(red_wine$quality,red_wine$density)
+#Scatter polt
+Bivariate(red_wine$quality,red_wine$density, "quality ~ density","quality","density" )
+```
+
+it's seems to have a negative relationship 
+
+### 14.quality_citric.acid
+
+```{r echo=FALSE,quality_citric.acid}
+# Compute Pearson correlation
+correlation(red_wine$quality,red_wine$citric.acid)
+#Scatter polt
+Bivariate(red_wine$quality,red_wine$citric.acid, "quality ~ citric.acid","quality","citric.acid" )
+```
+
+
+there is a positive relationship
+
+### 15.quality_alcohol
+
+```{r echo=FALSE,quality_alcohol}
+# Compute Pearson correlation
+correlation(red_wine$quality,red_wine$alcohol)
+#Scatter polt
+Bivariate(red_wine$quality,red_wine$alcohol, "quality ~ alcohol","quality","alcohol" )
+```
+
+this relationship is expected 
+
+### 16.alcohol_density
+
+```{r echo=FALSE,alcohol_density}
+# Compute Pearson correlation
+correlation(red_wine$alcohol,red_wine$density)
+#Scatter polt
+Bivariate(red_wine$alcohol,red_wine$density, "alcohol ~ density","alcohol","density" )
+```
+
+
+the  negative relationship is clear here 
+
+### 17.citric.acid_density
+
+
+```{r echo=FALSE,citric.acid_density}
+# Compute Pearson correlation
+correlation(red_wine$citric.acid,red_wine$density)
+#Scatter polt
+Bivariate(red_wine$citric.acid,red_wine$density, "quality ~ density","quality","density" )
+```
+
+a good a positive relationship
+
+### 18.pH_density
+
+
+```{r echo=FALSE,pH_density}
+# Compute Pearson correlation
+correlation(red_wine$pH,red_wine$density)
+#Scatter polt
+Bivariate(red_wine$pH,red_wine$density, "pH ~ density","pH","density" )
+```
+
+for me this was unexpected,negative relationship 
+
+### 19.pH_citric.acid
+
+```{r echo=FALSE,pH_citric.acid}
+# Compute Pearson correlation
+correlation(red_wine$pH,red_wine$citric.acid)
+#Scatter polt
+Bivariate(red_wine$pH,red_wine$citric.acid, "pH ~ citric.acid","pH","citric.acid" )
+```
+
+still pH Surprise me with it relationship
+
+### 20.fixed.acidity_density
+
+```{r echo=FALSE,fixed.acidity_density}
+# Compute Pearson correlation
+correlation(red_wine$fixed.acidity,red_wine$density)
+#Scatter polt
+Bivariate(red_wine$fixed.acidity,red_wine$density, "fixed.acidity ~ density","fixed.acidity","density" )
+```
+
+strong relationship
+
+
+### 21.pH_fixed.acidity
+
+```{r echo=FALSE,pH_fixed.acidity}
+# Compute Pearson correlation
+correlation(red_wine$pH,red_wine$fixed.acidity)
+#Scatter polt
+Bivariate(red_wine$pH,red_wine$fixed.acidity, "pH ~ fixed.acidity","pH","fixed.acidity" )
+```
+
+it has a negative relationship
+
+### 22.quality_fixed.acidity
+
+```{r echo=FALSE,quality_fixed.acidity}
+# Compute Pearson correlation
+correlation(red_wine$quality,red_wine$fixed.acidity)
+#Scatter polt
+Bivariate(red_wine$quality,red_wine$fixed.acidity, "quality ~ fixed.acidity","quality","fixed.acidity" )
+```
+
+seems to have a positev relationship
+
+
+
+### 23.alcohol_residual.sugar
+
+```{r echo=FALSE,alcohol_residual.sugar}
+# Compute Pearson correlation
+correlation(red_wine$alcohol,red_wine$residual.sugar)
+#Scatter polt
+Bivariate(red_wine$alcohol,red_wine$residual.sugar, "alcohol ~ residual.sugar","alcohol","residual.sugar" )
+```
+
+strong  positev relationship
+
+### 24.density_residual.sugar
+```{r echo=FALSE,density_residual.sugar}
+# Compute Pearson correlation
+correlation(red_wine$density,red_wine$residual.sugar)
+#Scatter polt
+Bivariate(red_wine$density,red_wine$residual.sugar, "density ~ sugar_density","density","sugar_density" )
+```
+
+good positev relationship
+
+### 25.quality_residual.sugar
+
+```{r echo=FALSE,quality_residual.sugar}
+# Compute Pearson correlation
+correlation(red_wine$quality,red_wine$residual.sugar)
+#Scatter polt
+Bivariate(red_wine$quality,red_wine$residual.sugar, "quality ~ residual.sugar","quality","residual.sugar" )
+```
+
+seems to have a positev relationship
+
+### 26.pH_quality
+
+```{r echo=FALSE,pH_quality}
+# Compute Pearson correlation
+correlation(red_wine$pH,red_wine$quality)
+#Scatter polt
+Bivariate(red_wine$pH,red_wine$quality, "pH ~ quality","pH","quality" )
+```
+
+negative relationship 
+
+
+# Bivariate Analysis
+
+
+
+### Talk about some of the relationships you observed in this part of the \investigation. How did the feature(s) of interest vary with other features in \the dataset?
+
+i found a positive relation between quality and density, but i was expected more than this correlation
+### Did you observe any interesting relationships between the other features \(not the main feature(s) of interest)?
+
+pH has Surprise me it has a strong nagative with some varabile,also the residual sugar
+### What was the strongest relationship you found?
+fixed.acidity with density (0.6680473)
+
+# Multivariate Plots Section
+
+
+
+
+#Multivariate
+```{r echo=FALSE, Multivariate_Plots}
+Multivariate <- function(var1, var2, var3, var4, var5){
+  
+ggplot(data = red_wine , aes(x=var1 , y= var2 ,color =density))+geom_point(alpha = 0.8, size = 1) + geom_jitter( alpha = 0.3)  +    geom_smooth(method = "lm", se = FALSE,size=1)  +
+       xlab(var3) + ylab(var4)+ggtitle(var5)
+}
+```
+
+I have plot the line of X and Y , the density will be colored dots.
+
+### 27.quality, alcohol and density
+```{r echo=FALSE,quality_alcohol_density}
+Multivariate(red_wine$quality,red_wine$alcohol, "quality", "alcohol","quality, density and alcohol" )
+
+```
+
+the relation between alcohol and quality is positive, but both have a negitive relation with density
+we can see that the line almot in a dots with dark color
+
+### 28.quality, alcohol and density
+```{r echo=FALSE}
+Multivariate(red_wine$quality,red_wine$pH, "quality", "pH","quality, density and pH" )
+```
+
+all relations here are nagitave.
+
+### 28.quality, citric.acid and density
+```{r echo=FALSE}
+Multivariate(red_wine$quality,red_wine$citric.acid, "quality", "citric.acid","quality, density and citric.acid" )
+```
+
+almost this three feature has a positive relation
+both density and quality has positive relation with citric acid
+so that it seems to be positive
+
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \investigation. Were there features that strengthened each other in terms of \looking at your feature(s) of interest?
+
+because i'm more interested in density and quality, I have chosen it to be in all plots, with alcohol we see the negative relation on density, and we see also how citric acid has positive relation on density.
+### Were there any interesting or surprising interactions between features?
+No , the result was expected 
+### OPTIONAL: Did you create any models with your dataset? Discuss the \strengths and limitations of your model.
+NO
+------
+
+# Final Plots and Summary
+
+
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+ggplot(data=red_wine , aes(x= quality))+
+    geom_histogram(bins = 30)+ggtitle('distribution of quality')+
+    xlab('quality (rating)') 
+```
+
+### Description One
+the quality is the most important variable, is normally distributed with minimum 3 and maximum 8 in this sample dataset, the peak of distribution is between 5 to 6. 
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+## this is th orginal 
+ggplot(data= red_wine, aes(x=quality, y= alcohol ))+
+       geom_point()+geom_smooth(method='lm')+
+      ggtitle('correlation between quality and alcohol')+xlab('quality (rating)')+
+       ylab('alcohol (%)')+
+geom_jitter( alpha = .3)  +
+  stat_summary(fun.y = "mean", 
+               geom = "point", 
+               color = "red", 
+               shape = 8, 
+               size = 5)
+
+```
+
+### Description Two
+
+I have modified the original one according to the reviewer
+I have added the geom_jitter to solve the problem of the dots in the x-axis 
+then add the stat_summary to get the mean, and we can see the line with the stars
+this positive correlation , when the percentage of alcohol is high then the equality will be good, the result of correlation is 0.4761663, not very strong but it's good enough to see the relation
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+ggplot(data= red_wine, aes(x=pH, y= fixed.acidity ))+
+       geom_jitter()+geom_smooth(method='lm',alpha = 0.3)+
+       ggtitle('correlation between pH and fixed acidity')+xlab('pH')+
+       ylab('fixed acidity')
+```
+
+### Description Three
+
+this is the worst negative correlation in this sample of data , when the pH increases the fixed acidity decreases and Vice versa the result of correlation is -0.6829782 it's seems to be a strong negative relation 
+------
+
+# Reflection
+
+it's interesting dataset with 1599 object and 14 variables, the challenge was that i have no idea about the chemical component of wine.
+i observe that the wine with good quality has high alcohol and citric acid they have a positve relationship.
+when the pH increace the quality decrease.
+also i see how the fixed acidity has strong relation with density and strong nagative relation with pH.
+
+
+# Reference
+tutorialspoint <br>
+udacity <br>
+* https://tutorials.iq.harvard.edu/R/Rgraphics/Rgraphics.html <br>
